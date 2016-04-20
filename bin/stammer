@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'colorize'
+require_relative '../src/stammer.rb'
+
+def L! path
+  if path.class == Symbol
+    load "./#{path.to_s}.rb"
+  else
+    load path
+  end
+end
+
+def puts_exception e
+  puts e.backtrace.join("\n\t")
+       .sub("\n\t", ": #{e}#{e.class ? " (#{e.class})" : ''}\n\t").red
+end
+
+puts <<-INFO
+Stammer on Ruby #{RUBY_VERSION}
+INFO
+
+s = Stammer::new
+loop do
+  begin
+    output = eval (s.next() or 'puts'), binding, 'Stammer', s.lines
+    puts "=> #{output.inspect}".green
+  rescue Interrupt
+    puts "\nBye for now!"
+    exit 0
+  rescue SyntaxError => e
+    puts_exception e
+  rescue => e
+    puts_exception e
+  end
+end
