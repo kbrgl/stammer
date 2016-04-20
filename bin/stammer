@@ -29,7 +29,7 @@ loop do
     exit 0
   rescue SyntaxError => e
     puts_exception e
-  rescue => e
+  rescue Exception => e
     puts_exception e
   end
 end
